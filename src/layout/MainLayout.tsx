@@ -51,7 +51,6 @@ const MainLayout = ({ children }: IChildren) => {
           style={{
             margin: 0,
             borderRadius: "10px",
-            height: "100vh", // change later
           }}
         >
           {children}

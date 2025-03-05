@@ -10,7 +10,11 @@ const { Content, Sider } = Layout;
 
 const DashboardLayout = ({ children }: IChildren) => {
   return (
-    <Layout>
+    <Layout
+      style={{
+        padding: 24,
+      }}
+    >
       <Sider
         breakpoint="lg"
         collapsedWidth="0"

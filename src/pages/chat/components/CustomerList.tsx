@@ -1,26 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import { Avatar, Flex, Skeleton, Spin, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Avatar, Flex, Spin, Typography } from "antd";
 import styled from "styled-components";
 import { useCustomer } from "../../../hooks/chat/useCustomer";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { ProfileDrawer } from "./ProfileDrawer";
-
-const InputField = styled.input`
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  height: 60px;
-`;
-
-interface ICustomer {
-  name: string;
-  email: string;
-  id: number;
-  phone: string;
-  role: string;
-  address: string;
-  age: number;
-}
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../app/store";
+import { useInView } from "react-intersection-observer";
 
 const Chatbox = styled.div`
   height: 80px;
@@ -40,71 +25,87 @@ const Chatbox = styled.div`
   }
 `;
 
-export const CustomerList = () => {
-  const [open, setOpen] = useState(false);
-  const [id, setId] = useState(0);
-  const [input, setInput] = useState("");
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+interface ICustomer {
+  name: string;
+  email: string;
+  id: number;
+  phone: string;
+  role: string;
+  address: string;
+  age: number;
+}
+
+export const CustomerList = ({
+  setCollapsed,
+}: {
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const nav = useNavigate();
+  const { ref, inView } = useInView();
+  const [customerData, setCustomerData] = useState<ICustomer[]>([]);
+
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, isFetching } =
     useCustomer();
-  const observerRef = useRef(null);
-  const [loading, setLoading] = useState(false);
   const res = data?.pages[data?.pages?.length - 1]?.users;
 
+  const reduxMessages = useSelector((state: RootState) => state.chatList.user);
+
+  const latestMessage = (id: number) => {
+    let newMessage;
+    const filteredMessages = reduxMessages.filter((x) => x.id === id);
+    if (filteredMessages?.length > 0 && filteredMessages[0]?.chat?.length > 0) {
+      newMessage =
+        filteredMessages[0]?.chat[filteredMessages[0]?.chat?.length - 1];
+      return (
+        <Typography.Text strong italic>
+          {newMessage.text}
+        </Typography.Text>
+      );
+    }
+    return <Typography.Text type="secondary">No New Messages</Typography.Text>;
+  };
+
   const showDrawer = (data: number) => {
-    setOpen(true);
-    setId(data);
+    nav(`/chat?id=${data}`);
+    setCollapsed(false);
   };
 
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const customerData = useMemo(() => {
-    return (
-      res?.flatMap((x) => ({
-        name: `${x.firstName} ${x.lastName}`,
-        email: x.email,
-        id: x.id,
-        phone: x.phone,
-        role: x.role,
-        address: x.address.address,
-        age: x.age,
-      })) || []
-    );
+  useEffect(() => {
+    if (res) {
+      setCustomerData((prev) => [
+        ...prev,
+        ...res.flatMap((x) => ({
+          name: `${x.firstName} ${x.lastName}`,
+          email: x.email,
+          id: x.id,
+          phone: x.phone,
+          role: x.role,
+          address: x.address.address,
+          age: x.age,
+        })),
+      ]);
+    }
   }, [res]);
 
-  const loadMoreData = useCallback(() => {
-    if (loading) {
-      return;
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
     }
-    setLoading(true);
-    fetchNextPage();
-    setLoading(true);
-  }, []);
+  }, [fetchNextPage, inView]);
 
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       if (entries[0].isIntersecting && hasNextPage) {
-  //         fetchNextPage();
-  //       }
-  //     },
-  //     { threshold: 1.0 }
-  //   );
-
-  //   if (observerRef.current) observer.observe(observerRef.current);
-
-  //   return () => observer.disconnect();
-  // }, [fetchNextPage, hasNextPage]);
   return (
-    <>
+    <div
+      style={{
+        height: "850px",
+        overflowY: "auto",
+      }}
+    >
       {isLoading ? (
         <Spin />
       ) : (
         <div
           id="scrollableDiv"
           style={{
-            // height: "700px",
             overflow: "auto",
             paddingLeft: "16px",
             display: "flex",
@@ -112,38 +113,42 @@ export const CustomerList = () => {
             gap: 4,
           }}
         >
-          <InputField
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Search"
-          />
-          <InfiniteScroll
-            dataLength={customerData.length}
-            next={loadMoreData}
-            hasMore={customerData.length < 10}
-            loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-            scrollableTarget="scrollableDiv"
+          <div
+            style={{
+              height: "x",
+              width: "100%",
+              padding: "10px",
+              background: "#6682ba",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            {customerData?.map((x: ICustomer, index: number) => (
-              <Chatbox onClick={() => showDrawer(x?.id)}>
-                <Avatar
-                  src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-                />
-                <Flex vertical>
-                  <Typography.Text strong>{x.name}</Typography.Text>
-                  <Typography.Text italic strong>
-                    {x.address}
-                  </Typography.Text>
-                </Flex>
-              </Chatbox>
-            ))}
+            <Typography.Title level={3}>Customers</Typography.Title>
+          </div>
 
-            {isFetchingNextPage && <Spin />}
-          </InfiniteScroll>
-          {open && <ProfileDrawer onClose={onClose} open={open} id={id} />}
+          {customerData?.map((x: ICustomer, index: number) => (
+            <Chatbox onClick={() => showDrawer(x?.id)}>
+              <Avatar
+                src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+              />
+              <Flex vertical>
+                <Typography.Text strong>{x.name}</Typography.Text>
+                <Typography.Text italic strong>
+                  {latestMessage(x.id)}
+                </Typography.Text>
+              </Flex>
+            </Chatbox>
+          ))}
+
+          {isFetchingNextPage && <Spin />}
         </div>
       )}
-    </>
+      <>
+        <div ref={ref}>
+          {isFetching && !isFetchingNextPage ? "Background Updating..." : null}
+        </div>
+      </>
+    </div>
   );
 };

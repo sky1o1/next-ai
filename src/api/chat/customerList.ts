@@ -2,7 +2,9 @@ import { privateAgent } from "../";
 
 export const customerList = async ({ pageParam = 0 }) => {
   try {
-    const response = await privateAgent.get(`/users?limit=9&skip=${pageParam}`);
+    const response = await privateAgent.get(
+      `/users?limit=10&skip=${pageParam}`
+    );
 
     return {
       users: response.data.users, // Ensure response has users

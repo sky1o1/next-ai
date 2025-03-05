@@ -6,9 +6,8 @@ import { useUserLogin } from "../hooks/useUserLogin";
 const layoutStyle = {
   borderRadius: 8,
   maxWidth: "500px",
-  height: "500px",
-  margin: "20px",
-  backgroundColor: "wheat",
+  height: "400px",
+  backgroundColor: "#e6eaed",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -33,11 +32,23 @@ export const Login = () => {
 
   return (
     <FormProvider {...methods}>
-      <Flex justify="center">
+      <Flex
+        justify="center"
+        align="center"
+        style={{
+          height: "100vh",
+        }}
+      >
         <Layout style={layoutStyle}>
           <Typography.Title level={2}>Login</Typography.Title>
-          <InputField name="username" label="Enter Username" />
-          <InputField name="password" label="Enter Password" type="password" />
+          <Flex vertical gap={10}>
+            <InputField name="username" label="Enter Username" />
+            <InputField
+              name="password"
+              label="Enter Password"
+              type="password"
+            />
+          </Flex>
           <ButtonAnt title="Submit" onClick={handleSubmit(handleClick)} />
         </Layout>
       </Flex>
