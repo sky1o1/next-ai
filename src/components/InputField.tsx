@@ -21,13 +21,28 @@ export const InputField = ({
 
   return (
     <div>
-      <label>{required ? `${label} *` : label}</label>
+      <label
+        style={{
+          color: "white",
+          fontSize: "18px",
+        }}
+      >
+        {required ? `${label} *` : label}
+      </label>
       <Controller
         name={name}
         control={control}
         rules={{ required: required ? `${label || name} is required` : false }}
         render={({ field }) => (
-          <Input {...field} type={type} placeholder={placeholder} />
+          <Input
+            {...field}
+            type={type}
+            placeholder={placeholder}
+            style={{
+              fontSize: "20px",
+              marginTop: "10px",
+            }}
+          />
         )}
       />
       {errors[name] && (

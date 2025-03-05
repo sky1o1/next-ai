@@ -11,26 +11,28 @@ import { ButtonAnt } from "../../../components";
 
 const DivChat = styled.div`
   height: 60px;
-  width: 96%;
-  margin-left: 20px;
+  width: auto;
   padding: 10px;
-  background: #6682ba;
+  background: #6e00ff;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  margin-left: 20px;
 `;
 
 const ChatContainer = styled(Flex)`
-  width: 96%;
   height: 700px;
   border: 1px solid #fff;
   overflow-y: scroll;
-  padding: 20px;
   margin-left: 20px;
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  border-radius: 20px;
+  boxshadow: 10px 20px 25px rgba(1, 200, 240, 0.5);
+  scrollbar-width: none;
 `;
 
 const InputContainer = styled.div`
@@ -51,13 +53,14 @@ const InputField = styled.input`
   width: 88%;
   padding: 8px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 10px;
+  boxshadow: 10px 20px 25px rgba(0, 0, 0, 0.5);
 `;
 
 const SendButton = styled.button`
   padding: 8px;
   background-color: ${(props) =>
-    props?.messagetype === "send" ? "#007bff" : "#25D366"};
+    props?.messagetype === "send" ? "#1877F2" : "#25D366"};
   color: white;
   border: none;
   border-radius: 4px;
@@ -141,18 +144,13 @@ export const ChatApp = () => {
 
   return (
     <div>
-      <DivChat onClick={() => {}}>
+      <DivChat>
         {isLoading ? (
           <> </>
         ) : (
-          <Typography.Title
-            level={3}
-            style={{
-              cursor: "pointer",
-            }}
-          >
+          <strong style={{ color: "white", fontSize: "24px" }}>
             {fullName ? fullName : "Start a new chat"}
-          </Typography.Title>
+          </strong>
         )}
       </DivChat>
       <ChatContainer>
@@ -160,6 +158,7 @@ export const ChatApp = () => {
           <div
             key={index}
             style={{
+              padding: "10px",
               width: "100%",
               display: "flex",
               justifyContent: msg?.isOutgoing ? "flex-end" : "flex-start",
@@ -183,6 +182,7 @@ export const ChatApp = () => {
                     strong
                     style={{
                       color: "white",
+                      fontSize: "18px",
                     }}
                   >
                     {msg?.text}
@@ -197,6 +197,7 @@ export const ChatApp = () => {
                     strong
                     style={{
                       color: "black",
+                      fontSize: "12px",
                     }}
                   >
                     {msg?.timestamp}

@@ -6,23 +6,62 @@ import { useCustomer } from "../../../hooks/chat/useCustomer";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../../app/store";
 import { useInView } from "react-intersection-observer";
+import {
+  IoChatbubbleEllipsesOutline,
+  IoHomeOutline,
+  IoSettingsOutline,
+} from "react-icons/io5";
+
+const ChatboxContainer = styled.div`
+  position: fixed;
+  top: 60px;
+  left: 20px;
+  width: 385px;
+  height: calc(100vh - 110px);
+  padding: 10px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #e6eaed;
+  transition: background-color 0.3s ease;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  overflow-y: auto;
+  margin-top: 35px;
+  scrollbar-width: none;
+`;
 
 const Chatbox = styled.div`
   height: 80px;
+  width: 100%;
   padding: 10px;
   background: white;
   display: flex;
   align-items: center;
+  justfy-content: center;
   cursor: pointer;
   gap: 20px;
-  border: 1px solid #e6eaed;
+  border-bottom: 1px solid #b4abab;
   transition: background-color 0.3s ease;
+  border-radius: 25;
   &:hover {
     background-color: #e6eaed;
   }
   &:active {
     background-color: #e6eaed;
   }
+`;
+
+const IconContainer = styled.div`
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 10px;
+  &:hover {
+    background: #9477cb;
+    color: black;
+  }
+  background: ${(props) => (props?.page === "/chat" ? "#9477cb" : "none")};
 `;
 
 interface ICustomer {
@@ -57,9 +96,19 @@ export const CustomerList = ({
       newMessage =
         filteredMessages[0]?.chat[filteredMessages[0]?.chat?.length - 1];
       return (
-        <Typography.Text strong italic>
-          {newMessage.text}
-        </Typography.Text>
+        <Flex
+          justify="space-between"
+          style={{
+            width: "300px",
+          }}
+        >
+          <Typography.Text strong italic>
+            {newMessage.text}
+          </Typography.Text>{" "}
+          <Typography.Text strong italic>
+            {newMessage.timestamp}
+          </Typography.Text>
+        </Flex>
       );
     }
     return <Typography.Text type="secondary">No New Messages</Typography.Text>;
@@ -91,64 +140,95 @@ export const CustomerList = ({
     if (inView) {
       fetchNextPage();
     }
-  }, [fetchNextPage, inView]);
+  }, [fetchNextPage, inView, ref]);
 
   return (
     <div
       style={{
-        height: "850px",
+        height: "800px",
         overflowY: "auto",
+        scrollbarWidth: "none",
       }}
     >
       {isLoading ? (
         <Spin />
       ) : (
         <div
-          id="scrollableDiv"
           style={{
-            overflow: "auto",
-            paddingLeft: "16px",
             display: "flex",
             flexDirection: "column",
-            gap: 4,
           }}
         >
           <div
             style={{
-              height: "x",
-              width: "100%",
-              padding: "10px",
-              background: "#6682ba",
+              background: "#6E00FF",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               alignItems: "center",
+              borderRadius: "20px",
+              boxShadow: "0px 5px 5px rgba(0, 0, 0, 0.3)",
+              position: "fixed",
+              zIndex: 10,
+              width: "23%",
+              padding: "4px",
             }}
           >
-            <Typography.Title level={3}>Customers</Typography.Title>
+            <IconContainer>
+              <IoHomeOutline
+                onClick={() => nav("/")}
+                size="30px"
+                color="white"
+              />
+            </IconContainer>
+            <IconContainer page="/chat">
+              <IoChatbubbleEllipsesOutline
+                onClick={() => nav("/chat")}
+                size="30px"
+                color="white"
+              />
+            </IconContainer>
+            <IconContainer>
+              <IoSettingsOutline
+                onClick={() => nav("/settings")}
+                size="30px"
+                color="white"
+              />
+            </IconContainer>
           </div>
 
-          {customerData?.map((x: ICustomer, index: number) => (
-            <Chatbox onClick={() => showDrawer(x?.id)}>
-              <Avatar
-                src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-              />
-              <Flex vertical>
-                <Typography.Text strong>{x.name}</Typography.Text>
-                <Typography.Text italic strong>
-                  {latestMessage(x.id)}
-                </Typography.Text>
-              </Flex>
-            </Chatbox>
-          ))}
+          <ChatboxContainer>
+            {customerData?.map((x: ICustomer, index: number) => {
+              const isLastItem = index === customerData?.length - 1;
+              return (
+                <Chatbox
+                  key={x.id}
+                  onClick={() => showDrawer(x.id)}
+                  ref={isLastItem ? ref : null}
+                >
+                  <Avatar
+                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                  />
+                  <Flex vertical>
+                    <strong
+                      style={{
+                        fontSize: "16px",
+                      }}
+                    >
+                      {x.name}
+                    </strong>
+                    <Typography.Text italic strong>
+                      {latestMessage(x.id)}
+                    </Typography.Text>
+                  </Flex>
+                </Chatbox>
+              );
+            })}
+            {isFetchingNextPage && <Spin />}
+          </ChatboxContainer>
 
           {isFetchingNextPage && <Spin />}
         </div>
       )}
-      <>
-        <div ref={ref}>
-          {isFetching && !isFetchingNextPage ? "Background Updating..." : null}
-        </div>
-      </>
     </div>
   );
 };

@@ -13,6 +13,7 @@ const DashboardLayout = ({ children }: IChildren) => {
     <Layout
       style={{
         padding: 24,
+        height: "100vh",
       }}
     >
       <Sider

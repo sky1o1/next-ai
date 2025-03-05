@@ -57,9 +57,10 @@ const LineChart = () => {
   return (
     <div
       style={{
-        height: "500px",
+        height: "575px",
         background: "white",
         padding: "10px",
+        borderRadius: "15px",
       }}
     >
       <Line data={data} options={options} />

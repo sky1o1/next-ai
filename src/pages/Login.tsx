@@ -7,7 +7,7 @@ const layoutStyle = {
   borderRadius: 8,
   maxWidth: "500px",
   height: "400px",
-  backgroundColor: "#e6eaed",
+  background: "#6e00ff",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -37,10 +37,13 @@ export const Login = () => {
         align="center"
         style={{
           height: "100vh",
+          background: "white",
         }}
       >
         <Layout style={layoutStyle}>
-          <Typography.Title level={2}>Login</Typography.Title>
+          <Typography.Title level={2} style={{ color: "white" }}>
+            Login
+          </Typography.Title>
           <Flex vertical gap={10}>
             <InputField name="username" label="Enter Username" />
             <InputField

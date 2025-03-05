@@ -9,7 +9,7 @@ export const Dashboard = () => {
     <DashboardLayout>
       <Row gutter={12}>
         <Col span={6}>
-          <Card variant="borderless">
+          <Card variant="borderless" style={{ borderRadius: "15px" }}>
             <Statistic
               title="Active"
               value={11.28}
@@ -21,7 +21,7 @@ export const Dashboard = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card variant="borderless">
+          <Card variant="borderless" style={{ borderRadius: "15px" }}>
             <Statistic
               title="Idle"
               value={9.3}
@@ -33,7 +33,7 @@ export const Dashboard = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card variant="borderless">
+          <Card variant="borderless" style={{ borderRadius: "15px" }}>
             <Statistic
               title="Idle"
               value={9.3}
@@ -45,7 +45,7 @@ export const Dashboard = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card variant="borderless">
+          <Card variant="borderless" style={{ borderRadius: "15px" }}>
             <Statistic
               title="Idle"
               value={9.3}
@@ -66,6 +66,7 @@ export const Dashboard = () => {
           style={{
             background: "white",
             padding: "20px",
+            borderRadius: "15px",
           }}
         >
           <Timeline

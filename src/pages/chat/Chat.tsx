@@ -6,13 +6,13 @@ import { ChatApp, CustomerList, ProfileDrawer } from "./components";
 const { Sider, Content } = Layout;
 
 const layoutStyle = {
-  height: "100vh",
-  backgroundColor: "#758694",
+  height: "auto",
+  backgroundColor: "#e6eaed",
 };
 
 const siderStyle: React.CSSProperties = {
   background: "#e6eaed",
-  paddingTop: "20px",
+  padding: "20px",
 };
 
 const contentStyle: React.CSSProperties = {
@@ -40,7 +40,11 @@ export const Chat = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         width="25%"
-        style={siderStyle}
+        style={{
+          background: "#e6eaed",
+          padding: "20px",
+        }}
+        theme="light"
       >
         {!collapsed && <ProfileDrawer id={userId} />}
       </Sider>
