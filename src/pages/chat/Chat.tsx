@@ -25,7 +25,7 @@ export const Chat = () => {
   const { search } = useLocation();
   const id = search.split("=");
   const userId = Number(id[id.length - 1]);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <Layout style={layoutStyle}>
